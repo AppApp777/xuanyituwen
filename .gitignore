@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.vscode/
+.idea/
+.env
+.env.*
+generated_images/
+runs/
+outputs/
+*.png
+*.jpg
+*.jpeg
+*.webp
