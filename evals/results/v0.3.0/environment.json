@@ -1,0 +1,8 @@
+{
+  "recorded_at": "2026-08-21",
+  "python": "3.12.10",
+  "pillow": "12.2.0",
+  "scope": "deterministic contract checks",
+  "online_image_generation": false,
+  "trigger_evaluation": false
+}

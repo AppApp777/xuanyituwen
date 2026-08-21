@@ -1,74 +1,116 @@
 {
+  "schema_version": 1,
   "skill_name": "xuanyituwen",
+  "evaluation_policy": {
+    "trigger_evaluation": false,
+    "online_image_generation_in_ci": false,
+    "note": "本文件评估技能触发后的阶段控制和交付合同，不评估触发准确性。"
+  },
   "evals": [
     {
-      "id": 1,
+      "id": "direction-gate-v1",
+      "case_version": 1,
       "name": "三方向先行",
+      "stage": "proposal",
       "prompt": "我想做一组伪记录悬疑图文：一个男生每天晚上都收到同一个已经搬走的室友发来的语音。先不要生图，先给我三个故事方向。",
+      "fixture_paths": [],
+      "allowed_actions": ["write_text"],
+      "forbidden_actions": ["image_gen", "create_image_directories"],
       "expected_output": "先给三个明显不同的方向，并为每个方向写清悬念、记录来源、底层真相、最后落点和伏笔方向；暂停等待选择。",
-      "files": [],
-      "expectations": [
-        "输出恰好三个彼此有明显差异的故事方向。",
-        "每个方向都写出记录来源、底层真相或不可解释规则、最后落点和伏笔方向。",
-        "在用户选择方向前不生成图片，并明确等待选择。"
-      ]
+      "machine_assertions": [
+        {"id": "exactly-three-directions", "type": "count_heading", "value": 3},
+        {"id": "no-image-generation", "type": "absent_action", "value": "image_gen"},
+        {"id": "wait-for-choice", "type": "contains_any", "values": ["等待选择", "确认方向", "暂停"]}
+      ],
+      "judge_rubric": ["三个方向的真相、视角和终局确实不同", "没有在用户选择前生成图片"],
+      "pass_threshold": 0.9,
+      "baseline_prompt": "同一任务，不加载 xuanyituwen，只要求普通模型给出三个悬疑图组方向。",
+      "trials": 1,
+      "model_environment": {"image_gen": "not_used", "human_review": "optional"}
     },
     {
-      "id": 2,
+      "id": "control-sheet-v1",
+      "case_version": 1,
       "name": "控制稿与伏笔",
+      "stage": "control-sheet",
       "prompt": "我选第二个方向。请继续做故事控制稿，默认七张图，要求真实记录感、异常逐步渗入、最后一张明显恐怖；不要生成图片。",
+      "fixture_paths": ["evals/fixtures/confirmed-direction-2.md"],
+      "allowed_actions": ["read_fixture", "write_text"],
+      "forbidden_actions": ["image_gen", "create_image_directories"],
       "expected_output": "输出创作者可审的完整控制稿，包含作者真相、信息权限、角色场景物件连续性、至少三条伏笔、逐图骨架和最后的反转后果；暂停确认。",
-      "files": [],
-      "expectations": [
-        "控制稿明确写出作者真相或明确的不可解释规则。",
-        "控制稿包含角色知识、记录者观察权限、场景和关键物件连续性。",
-        "至少列出三条伏笔，并给出埋设和回收或有意延后的位置。",
-        "默认按七张图组织，并写出最后一张的恐怖落点和反转后果。",
-        "控制稿完成后暂停确认，不生成图片。"
-      ]
+      "machine_assertions": [
+        {"id": "truth-and-permissions", "type": "contains_all", "values": ["作者真相", "信息权限", "FRAME-01", "FRAME-07"]},
+        {"id": "three-clues", "type": "count_token_prefix", "prefix": "CLUE-", "minimum": 3},
+        {"id": "no-image-generation", "type": "absent_action", "value": "image_gen"}
+      ],
+      "judge_rubric": ["作者真相和记录者权限分开", "结尾回收前文证据而非新增设定"],
+      "pass_threshold": 0.85,
+      "baseline_prompt": "同一任务，不加载 xuanyituwen，只要求普通模型写七张悬疑故事控制稿。",
+      "trials": 1,
+      "model_environment": {"image_gen": "not_used", "fixture_version": "v1"}
     },
     {
-      "id": 3,
+      "id": "frame-interface-v1",
+      "case_version": 1,
       "name": "逐图视觉接口",
+      "stage": "frame-plan",
       "prompt": "控制稿已确认。请把这个故事拆成七张逐图卡片，保持同一个人物、同一条走廊和一把红伞连续；每张保持无字，并给出无字底图的生成规格，不要调用生图工具。",
-      "expected_output": "每张卡片包含记录来源、时间地点、可见事实、角色判断、行动后果、伏笔状态、连续性锚点、空间锚点合同和无字底图提示，不包含图片内文字规格。",
-      "files": [],
-      "expectations": [
-        "输出七张逐图卡片，而不是只给一段总纲。",
-        "每张卡片都包含记录来源、时间地点、可见事实、角色判断、行动后果和下一张问题。",
-        "每张卡片都写出同一人物、同一条走廊和红伞的连续性锚点。",
-        "每张卡片都包含伏笔状态、无字底图生成规格和空间锚点合同。",
-        "无字底图生成规格按 prompt 预设库组织，包含记录载体、角色与场景连续性锁定、空间锚点合同、决定性空间关系和设备或平台负面约束。",
-        "明确底图不生成文字、不调用生图工具，并保留纯净 PNG 归一化接口；同时说明第一人称发布配文应独立写入 captions.md。",
-        "七张卡片使用 FRAME-01 至 FRAME-07 的稳定编号，并说明该编号贯穿 prompt、图片文件和 captions.md。"
-      ]
+      "fixture_paths": ["evals/fixtures/confirmed-control-sheet.md"],
+      "allowed_actions": ["read_fixture", "write_text"],
+      "forbidden_actions": ["image_gen"],
+      "expected_output": "每张卡片包含记录来源、时间地点、可见事实、角色判断、行动后果、伏笔状态、连续性锚点、空间锚点合同和无字底图提示，并绑定 prompt、图片和配文路径。",
+      "machine_assertions": [
+        {"id": "seven-frames", "type": "exact_frame_range", "start": 1, "end": 7},
+        {"id": "frame-contract", "type": "contains_all", "values": ["EVID-", "ANCHOR-", "prompts/frame-01.txt", "captions.md"]},
+        {"id": "no-image-generation", "type": "absent_action", "value": "image_gen"}
+      ],
+      "judge_rubric": ["每张图有可见证据和状态变化", "空间拓扑与镜头投影没有混为一谈"],
+      "pass_threshold": 0.85,
+      "baseline_prompt": "同一任务，不加载 xuanyituwen，只要求普通模型写七张图片提示词。",
+      "trials": 1,
+      "model_environment": {"image_gen": "not_used", "fixture_version": "v1"}
     },
     {
-      "id": 4,
+      "id": "caption-delivery-v1",
+      "case_version": 1,
       "name": "第一人称文本交付",
+      "stage": "captions",
       "prompt": "七张无字悬疑图已经生成。请为每张图补一段记录者第一人称发布配文，并给出总标题、总引子、置顶评论和话题建议；文字不要嵌入图片。",
+      "fixture_paths": ["evals/fixtures/seven-frame-fixture.md"],
+      "allowed_actions": ["read_fixture", "write_text"],
+      "forbidden_actions": ["image_gen", "embed_text_in_images"],
       "expected_output": "创建 captions.md，七张配文严格对应逐图事实，使用记录者第一人称，并补齐发布元数据。",
-      "files": [],
-      "expectations": [
-        "为七张图各提供一段独立的第一人称配文。",
-        "配文只使用记录者在当时能够知道或观察到的信息。",
-        "提供总标题、总引子、置顶评论和话题建议。",
-        "明确文字不嵌入图片。",
-        "每个配文小节使用对应的 FRAME 编号，并注明关联的 final/frame-xx.png 文件。"
-      ]
+      "machine_assertions": [
+        {"id": "seven-caption-sections", "type": "exact_frame_range", "start": 1, "end": 7},
+        {"id": "caption-bindings", "type": "contains_all", "values": ["final/frame-01.png", "prompts/frame-01.txt", "EVID-01"]},
+        {"id": "no-embedded-text", "type": "contains_all", "values": ["不嵌入图片", "独立文本"]}
+      ],
+      "judge_rubric": ["配文只使用记录者权限内的信息", "配文与图片事实绑定且没有凭空补设定"],
+      "pass_threshold": 0.9,
+      "baseline_prompt": "同一任务，不加载 xuanyituwen，只要求普通模型写七段发布文案。",
+      "trials": 1,
+      "model_environment": {"image_gen": "not_used", "fixture_version": "v1"}
     },
     {
-      "id": 5,
+      "id": "ending-gate-v1",
+      "case_version": 1,
       "name": "终局图主体冲击力验收",
+      "stage": "quality-gate",
       "prompt": "请只审查第七张终局图的视觉验收标准，不重新生成图片。要求主体占画面主要区域、缩略图一眼可识别、只有一个主要视觉焦点、背景不能抢主体，并检查它是否仍然回收前文线索。",
-      "expected_output": "输出终局图主体冲击力门和结尾门的逐项检查结果，明确列出不通过项和针对性修正方向。",
-      "files": [],
-      "expectations": [
-        "检查主体占画面主要区域，默认目标约为 60％～80％。",
-        "检查缩略图可识别性、单一视觉焦点、主体与背景的对比和背景干扰。",
-        "检查终局冲击是否来自已建立的对象、距离、盲区、反光、遮挡或方向，而不是凭空增加新设定。",
-        "不调用生图工具，只输出验收结果和针对性修正方向。"
-      ]
+      "fixture_paths": ["evals/fixtures/terminal-frame-fixture.md"],
+      "allowed_actions": ["read_fixture", "write_quality_report"],
+      "forbidden_actions": ["image_gen", "claim_unseen_visual_pass"],
+      "expected_output": "输出终局图主体冲击力门和结尾门的逐项检查结果，明确列出不通过项、证据和针对性修正方向。",
+      "machine_assertions": [
+        {"id": "impact-fields", "type": "contains_all", "values": ["subject_bbox", "thumbnail", "focal_count", "EVID-", "fix_target"]},
+        {"id": "no-regeneration", "type": "absent_action", "value": "image_gen"},
+        {"id": "evidence-required", "type": "contains_any", "values": ["artifact", "图片路径", "没有输入图片"]}
+      ],
+      "judge_rubric": ["主体冲击力有可举证的检查字段", "明确区分视觉判断、故事回收和不可检查状态"],
+      "pass_threshold": 0.85,
+      "baseline_prompt": "同一任务，不加载 xuanyituwen，只要求普通模型给出终局图审查清单。",
+      "trials": 1,
+      "model_environment": {"image_gen": "not_used", "fixture_version": "v1"}
     }
   ]
 }

@@ -1,8 +1,12 @@
 # xuanyituwen
 
+[![CI](https://github.com/AppApp777/xuanyituwen/actions/workflows/ci.yml/badge.svg)](https://github.com/AppApp777/xuanyituwen/actions/workflows/ci.yml) [![Latest release](https://img.shields.io/github/v/release/AppApp777/xuanyituwen)](https://github.com/AppApp777/xuanyituwen/releases) [![License](https://img.shields.io/github/license/AppApp777/xuanyituwen)](LICENSE)
+
 ## 伪记录悬疑图文编排器
 
 xuanyituwen 是一个面向 Codex 的叙事与视觉生产 skill。它把一句事件种子、一个异常设定或一段恐怖氛围，转换成一套可审、可回溯、可连续验收的竖屏伪记录悬疑图文。
+
+它只在用户明确要制作多张连续的悬疑、恐怖或伪记录图组时使用，不负责单张恐怖图、普通悬疑写作、简单图片编辑或普通生图 prompt。
 
 它解决的不是“如何写一条更长的生图提示词”，而是一个更难的问题：
 
@@ -18,6 +22,8 @@ xuanyituwen 是一个面向 Codex 的叙事与视觉生产 skill。它把一句�
 6. **成片验收层**：统一输出尺寸和色彩模式，并检查因果、连续性、锚点漂移、平台界面残留和终局落点。
 
 它的核心价值，是把“看起来像一组恐怖图片”提升成“可以被复盘的视觉叙事系统”。
+
+![完整无字示例：猫眼里面的人](examples/cat-eye-person/contact-sheet.png)
 
 ## 为什么它比普通生图提示词更稳定
 
@@ -97,7 +103,7 @@ flowchart LR
 
 - 所属父面，例如门扇、门框、墙面、地面、柜体或设备。
 - 场景母版中的归一化包围框。
-- 与至少两个相邻对象的局部关系。
+- 默认与两个相邻对象的局部关系；稀疏场景可以记录一个相邻对象并说明例外理由。
 - 朝向、尺度、允许变化和禁止变化。
 
 实际 prompt 必须重复携带锚点合同。镜头可以换角度，但门链不能从门扇跑到门框，电视不能突然换墙，脚印不能无理由反向，柜体不能镜像。
@@ -136,13 +142,13 @@ flowchart LR
 Windows PowerShell：
 
 ~~~powershell
-git clone https://github.com/AppApp777/xuanyituwen.git "$env:USERPROFILE\.codex\skills\xuanyituwen"
+git clone https://github.com/AppApp777/xuanyituwen.git "$env:USERPROFILE\.agents\skills\xuanyituwen"
 ~~~
 
 macOS 或 Linux：
 
 ~~~bash
-git clone https://github.com/AppApp777/xuanyituwen.git ~/.codex/skills/xuanyituwen
+git clone https://github.com/AppApp777/xuanyituwen.git ~/.agents/skills/xuanyituwen
 ~~~
 
 也可以把仓库目录放进某个项目的 .agents/skills/，让它只对该项目生效。
@@ -150,13 +156,13 @@ git clone https://github.com/AppApp777/xuanyituwen.git ~/.codex/skills/xuanyituw
 ### 运行依赖
 
 - Codex 宿主提供内置 image_gen，用于逐张生成底图。
-- Python 3。
-- Pillow，用于无字底图的尺寸、色彩模式和 PNG 归一化。
+- Python 3.9 或更高版本。
+- Pillow 10 或更高版本，用于无字底图的尺寸、色彩模式和 PNG 归一化。
 
 安装 Pillow：
 
 ~~~bash
-python -m pip install Pillow
+python -m pip install -r requirements.txt
 ~~~
 
 这个仓库不是独立的图片生成应用。它提供的是 Codex 可执行的叙事编排、提示词组装、空间连续性和交付验收能力。
@@ -182,10 +188,12 @@ python -m pip install Pillow
 ~~~bash
 python scripts/normalize_raster.py \
   --input base/frame-01.png \
-  --output final/frame-01.png
+  --output final/frame-01.png \
+  --fit cover \
+  --overwrite
 ~~~
 
-脚本只做尺寸、色彩模式和 PNG 格式归一化，不添加文字层；它不负责检查输入图片是否已经含有文字，输出中的 `ocr_check` 会明确标记为 `not_run`。
+脚本只做尺寸、色彩模式和 PNG 格式归一化，不添加文字层；它不负责检查输入图片是否已经含有文字，输出中的 `text_layer_added` 会是 `false`，`ocr_check` 会明确标记为 `not_run`。默认不覆盖已有文件；主体不在画面中心时，可以用 `--fit cover --focus-x 0.35 --focus-y 0.45` 调整裁切焦点。
 
 ## 输出合同
 
@@ -196,6 +204,7 @@ python scripts/normalize_raster.py \
 ├── story-control.md          # 作者真相、信息权限、时间线和结尾规则
 ├── frame-plan.md             # 每张 FRAME-01 式编号的叙事与视觉卡片
 ├── captions.md               # 带 FRAME 编号绑定的第一人称配文、标题、引子、置顶评论和话题
+├── manifest.json              # 图片、prompt、配文和关键 ID 的轻量绑定索引
 ├── continuity-ledger.md      # 角色、场景、物件和记录来源连续性
 ├── spatial-anchor-ledger.md  # 场景母版与空间锚点合同
 ├── prompts/                  # 每张实际使用的完整 prompt
@@ -252,19 +261,30 @@ python scripts/normalize_raster.py \
 | references/quality-gate.md | 故事、连续性、伏笔、画面和结尾验收 |
 | references/provenance.md | 方法来源、许可证边界和独立设计说明 |
 | scripts/normalize_raster.py | 无字底图归一化脚本 |
-| evals/evals.json | 工作流前向测试任务与期待结果 |
+| scripts/validate_artifact_package.py | 产物包编号、文件绑定和图片规格校验 |
+| evals/evals.json | 带夹具、机器断言和评分量表的工作流测试任务 |
+| evals/README.md | 评测边界、运行命令和结果解释 |
 | agents/openai.yaml | Codex 界面显示名和默认入口 |
 
 ## 评测与验证
 
-仓库内置五个工作流测试，覆盖方向先行、控制稿与伏笔、逐图视觉接口、第一人称文本交付和终局图主体冲击力验收。最小静态检查：
+仓库内置五个工作流测试，覆盖方向先行、控制稿与伏笔、逐图视觉接口、第一人称文本交付和终局图主体冲击力验收。测试夹具只验证工作流产物，不加入触发准确性评测，也不在 CI 中在线调用生图工具。
 
 ~~~bash
 python -m json.tool evals/evals.json > /dev/null
 python -m py_compile scripts/normalize_raster.py
+python scripts/validate_artifact_package.py examples/cat-eye-person --strict
+python -m pytest
 ~~~
 
-如果需要做完整的 with-skill 与 baseline 对比，可以使用 skill-creator 提供的评测流程，把结果放到仓库外的评测工作区，不把个人生成图和聊天记录提交进仓库。
+`evals/results/` 只保存轻量的结构检查结果。需要完整的带技能与基线对比时，可以使用 `skill-creator` 提供的评测流程，把个人生成图和聊天记录放到仓库外的评测工作区。
+
+## 示例与失败案例
+
+- [`examples/cat-eye-person`](examples/cat-eye-person)：一个完整的七张无字图组，包含控制稿、逐图计划、空间账本、prompts、base、final、captions 和 manifest。
+- [`examples/failed-anchor-drift`](examples/failed-anchor-drift)：一个被空间质量门拒绝的失败案例，展示“换父面”和“镜像”如何被记录与修正。
+
+示例图片只保留经过筛选的低分辨率或授权资产；更大的发布素材不进入日常代码变更。
 
 ## 边界与局限
 

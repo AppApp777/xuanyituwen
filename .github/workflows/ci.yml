@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Validate metadata and evaluation fixtures
+        run: |
+          python -m json.tool evals/evals.json > /dev/null
+          python scripts/validate_evals.py
+      - name: Compile Python scripts
+        run: python -m py_compile scripts/*.py
+      - name: Validate public example package
+        run: python scripts/validate_artifact_package.py examples/cat-eye-person --strict
+      - name: Run tests
+        run: python -m pytest -q

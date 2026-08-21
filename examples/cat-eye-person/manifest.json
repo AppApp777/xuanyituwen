@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "story_id": "cat-eye-person",
+  "title": "猫眼里面的人",
+  "frame_count": 7,
+  "image_spec": {"width": 1080, "height": 1920, "mode": "RGB", "text_layer_added": false, "ocr_check": "not_run"},
+  "definitions": {
+    "facts": ["FACT-01", "FACT-02"],
+    "evidence": ["EVID-01", "EVID-02", "EVID-03", "EVID-04", "EVID-05", "EVID-06", "EVID-07"],
+    "clues": ["CLUE-01", "CLUE-02", "CLUE-03"],
+    "anchors": ["ANCHOR-01", "ANCHOR-02", "ANCHOR-03", "ANCHOR-04", "ANCHOR-05", "ANCHOR-06", "ANCHOR-07"]
+  },
+  "frames": [
+    {"id": "FRAME-01", "image": "final/frame-01.png", "prompt": "prompts/frame-01.txt", "caption": "captions.md#frame-01"},
+    {"id": "FRAME-02", "image": "final/frame-02.png", "prompt": "prompts/frame-02.txt", "caption": "captions.md#frame-02"},
+    {"id": "FRAME-03", "image": "final/frame-03.png", "prompt": "prompts/frame-03.txt", "caption": "captions.md#frame-03"},
+    {"id": "FRAME-04", "image": "final/frame-04.png", "prompt": "prompts/frame-04.txt", "caption": "captions.md#frame-04"},
+    {"id": "FRAME-05", "image": "final/frame-05.png", "prompt": "prompts/frame-05.txt", "caption": "captions.md#frame-05"},
+    {"id": "FRAME-06", "image": "final/frame-06.png", "prompt": "prompts/frame-06.txt", "caption": "captions.md#frame-06"},
+    {"id": "FRAME-07", "image": "final/frame-07.png", "prompt": "prompts/frame-07.txt", "caption": "captions.md#frame-07"}
+  ],
+  "quality": {
+    "ending": {
+      "frame": "FRAME-07",
+      "result": "pass",
+      "evidence": "final/frame-07.png；缩略图 270×480 中人脸、眼睛和伸入镜头的手仍是唯一主要焦点",
+      "subject_bbox": [0.12, 0.06, 0.76, 0.82],
+      "minimum_subject_area": 0.60,
+      "focal_count": 1,
+      "thumbnail": {"width": 270, "height": 480, "recognizable": true}
+    }
+  }
+}

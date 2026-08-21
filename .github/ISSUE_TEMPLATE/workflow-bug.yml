@@ -1,0 +1,23 @@
+name: 工作流问题
+description: 报告可以复现的故事、空间、配文或输出合同问题
+title: "[workflow] "
+labels: [bug]
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现条件
+      description: 请脱敏描述事件种子、阶段、输入夹具和实际输出。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期与实际
+    validations:
+      required: true
+  - type: input
+    id: frame
+    attributes:
+      label: FRAME 或 ID
+      placeholder: FRAME-07，EVID-03，ANCHOR-02
