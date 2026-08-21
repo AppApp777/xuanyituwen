@@ -23,7 +23,7 @@
 - 生成第一张图前先建立场景母版和空间锚点合同；关键物件的父面、局部坐标、相邻关系和朝向必须成为每张 prompt 的固定段。
 - 画面换角度时保持场景坐标系和父子关系，不把屏幕坐标的变化误当成物件可以移动；严禁镜像、换父面、上下顺序改变或同类物件重复。
 - 涉及手机、监控或门铃画面时，必须明确屏幕可以显示什么、绝对不能显示什么。
-- 画面内不生成任何可读文字，底图统一写 `no readable text, no subtitles, no generated Chinese characters`；抖音发布页第一人称配文写入独立的 `captions.md`，绝不嵌入图片。
+- 画面内不生成任何可读文字，底图统一写 `no readable text, no subtitles, no generated Chinese characters`；抖音发布页配文由创作者自行填写，skill 不做图片内嵌字。
 - 每张实际发送的完整 prompt 保存到输出包的 `prompts/frame-XX.txt`，便于回看哪一段导致了问题。
 
 ## 全局基底
@@ -177,12 +177,6 @@ Avoid polished film stills, centered poster composition, beauty lighting, symmet
 
 ```text
 Ending beat: reveal the established threat by reinterpreting <at least two earlier details>. The final threat must be connected to <existing prop, shadow, footprint, voice, clothing, or location> and must leave a visible consequence. Make the scare discoverable in the image before the creator's publish-page caption explains it. Do not introduce a new identity, ability, object, or world rule in the final frame.
-```
-
-终局图还要补充主体冲击力段：
-
-```text
-Ending impact: use one dominant subject occupying approximately 60-80% of the vertical frame. Keep the silhouette, face, hand, action, or threat immediately readable at thumbnail size. Use a single focal point, strong subject-background contrast, and a quiet background that supports rather than competes with the established threat. Do not let the subject be cropped by the frame edge or hidden by decorative effects.
 ```
 
 如果需要突然惊吓：

@@ -1,7 +1,7 @@
 interface:
   display_name: "伪记录悬疑图文"
-  short_description: "把事件种子编成带因果、伏笔、空间连续性和第一人称配文的伪记录悬疑图组"
-  default_prompt: "使用 $xuanyituwen，把这个事件种子编成一套默认七张的无字伪记录悬疑图组，锁定场景空间锚点，并交付每张图对应的第一人称发布配文。"
+  short_description: "把事件种子编成连续、带伏笔与恐怖落点的无字伪记录悬疑图组"
+  default_prompt: "使用 $xuanyituwen，把这个事件种子编成一套默认七张的无字伪记录悬疑图组，并锁定场景空间锚点。"
 
 policy:
   allow_implicit_invocation: true

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normalize a no-text raster without adding overlays or claiming OCR inspection."""
+"""Normalize a no-text raster to a portrait RGB PNG without adding overlays."""
 
 from __future__ import annotations
 
@@ -32,8 +32,7 @@ def normalize(input_path: Path, output_path: Path, width: int, height: int) -> d
         "width": width,
         "height": height,
         "mode": "RGB",
-        "text_layer_added": False,
-        "ocr_check": "not_run",
+        "embedded_text": False,
     }
 
 

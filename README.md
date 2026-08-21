@@ -1,297 +1,214 @@
-# xuanyituwen
+<div align="center">
+  <img src="assets/branding/logo.png" alt="xuanyituwen logo" width="176">
+  <h1>xuanyituwen</h1>
+  <p><strong>把一个异常，编排成一组连续的伪记录。</strong></p>
+  <p>面向创作者的 Codex skill，用故事控制、空间锚点和逐图验收，生成六张以上的无字悬疑图组。</p>
+  <p>
+    <img src="https://img.shields.io/badge/Codex-Skill-171717?style=for-the-badge&logo=openai&logoColor=white" alt="Codex Skill">
+    <img src="https://img.shields.io/badge/Output-9%3A16-7C3AED?style=for-the-badge" alt="9 to 16 output">
+    <img src="https://img.shields.io/badge/Images-No%20text-C84432?style=for-the-badge" alt="No text in images">
+    <img src="https://img.shields.io/badge/Frames-7%2B-6B5442?style=for-the-badge" alt="Seven or more frames">
+  </p>
+  <p>
+    <a href="#案例">案例</a> ·
+    <a href="#工作流">工作流</a> ·
+    <a href="#快速开始">快速开始</a> ·
+    <a href="#设计原则">设计原则</a> ·
+    <a href="#参与贡献">参与贡献</a>
+  </p>
+</div>
 
-## 伪记录悬疑图文编排器
+> `xuanyituwen` 的图片交付保持纯净无字。抖音发布页的配文、标题、话题和置顶评论，由创作者自行填写。
 
-xuanyituwen 是一个面向 Codex 的叙事与视觉生产 skill。它把一句事件种子、一个异常设定或一段恐怖氛围，转换成一套可审、可回溯、可连续验收的竖屏伪记录悬疑图文。
+<p align="center">
+  <img src="assets/branding/social-preview.png" alt="xuanyituwen GitHub social preview" width="820">
+</p>
 
-它解决的不是“如何写一条更长的生图提示词”，而是一个更难的问题：
+## 它是什么
 
-> 如何让七张各自独立生成的图片，仍然属于同一个世界、同一条因果链、同一组证据，并在最后一张完成公平而有冲击力的揭示。
+普通的生图 prompt 往往会得到“每张都好看，但不是同一个故事”的结果：人物变脸、门链换边、道具换父面、时间线断裂，最后一张突然凭空增加一个新设定。
 
-这套 skill 将悬疑创作拆成六个可控制层：
+`xuanyituwen` 把这件事拆成一条可确认、可回溯的生产链：
 
-1. **叙事控制层**：定义作者真相、角色知识边界、时间线和允许揭示的信息。
-2. **证据编排层**：管理伏笔、误导、验证、反证、回收和行动代价。
-3. **视觉连续性层**：锁定人物外观、衣着、场景结构、关键物件和记录来源。
-4. **空间锚定层**：为门、猫眼、门链、电视、柜体、脚印路线等对象登记父面、坐标、相邻关系、朝向和禁止变化。
-5. **文本交付层**：为每张图片独立生成第一人称观众版配文、总标题、总引子、置顶评论和话题建议；文字不嵌入图片，但必须单独交付。
-6. **成片验收层**：统一输出尺寸和色彩模式，并检查因果、连续性、锚点漂移、平台界面残留和终局落点。
-
-它的核心价值，是把“看起来像一组恐怖图片”提升成“可以被复盘的视觉叙事系统”。
-
-## 为什么它比普通生图提示词更稳定
-
-普通提示词通常只描述单张画面，模型因此容易在连续图中发生人物变脸、道具换位、光源跳变、时间关系断裂，最后一张则凭空增加新身份或新能力。
-
-xuanyituwen 把这些问题转成可检查的合同和账本：
-
-| 普通生图流程 | xuanyituwen |
-|---|---|
-| 每张图片单独描述 | 逐图卡片驱动状态迁移 |
-| “保持场景一致” | 明确父面、归一化坐标和相邻锚点 |
-| 伏笔依靠记忆 | 伏笔账本记录埋设、回响、推进和回收 |
-| 角色可以突然知道真相 | 信息权限表限制角色观察范围 |
-| 结尾可以临时补设定 | 终局必须回收既有证据，禁止凭空加设定 |
-| 图片里塞字幕解决叙事 | 底图纯净无字，第一人称配文独立交付 |
-| 生成后只看“好不好看” | 故事、连续性、空间、纯净画面和结尾分层验收 |
-
-## 生产管线
-
-~~~mermaid
+```mermaid
 flowchart LR
     A[事件种子] --> B[三个故事方向]
-    B --> C[作者故事控制稿]
-    C --> D[逐图卡与信息边界]
-    D --> E[空间锚点账本]
-    E --> F[逐张无字底图]
-    F --> G[第一人称配文]
-    G --> H[尺寸归一化]
-    H --> I[质量门验收]
-~~~
+    B --> C[作者控制稿]
+    C --> D[逐图卡]
+    D --> E[场景母版与空间锚点]
+    E --> F[逐张无字生图]
+    F --> G[连续性验收]
+    G --> H[无字 PNG 成片]
+```
 
-流程有三个明确的人工确认点：
+它不是观众版文案生成器，而是创作者的制作控制台：先把故事想清楚，再把每一张图变成可以检查的视觉证据。
 
-- 选择故事方向后，才进入控制稿。
-- 控制稿确认后，才拆逐图卡。
-- 逐图卡与空间锚点合同成立后，才逐张调用生图工具。
+## 案例
 
-这保证创作者能够在最便宜的阶段修正真相、视角和结尾，而不是等七张图生成完才发现故事已经失控。
+### 《猫眼里面的人》
+
+一个新租客连续几晚在凌晨 3 点 16 分听见敲门声。猫眼外没有人，雾气却出现在门内侧；当他拆开猫眼，才发现门体后面藏着一段能容纳人的检修腔。
+
+这套案例包含七张无字成片，节奏从普通室内记录，逐步推进到门体证据、检修腔和最后一张近距离跳脸。
+
+<p align="center">
+  <img src="assets/showcase/cat-eye-person/contact-sheet.jpg" alt="猫眼里面的人，七张无字悬疑图组总览" width="920">
+</p>
+
+<table align="center">
+  <tr>
+    <td><img src="assets/showcase/cat-eye-person/frame-01.jpg" alt="第一张，普通门口记录" width="150"></td>
+    <td><img src="assets/showcase/cat-eye-person/frame-02.jpg" alt="第二张，门外空走廊" width="150"></td>
+    <td><img src="assets/showcase/cat-eye-person/frame-03.jpg" alt="第三张，猫眼近景" width="150"></td>
+    <td><img src="assets/showcase/cat-eye-person/frame-04.jpg" alt="第四张，拆解门体" width="150"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/showcase/cat-eye-person/frame-05.jpg" alt="第五张，检修腔证据" width="150"></td>
+    <td><img src="assets/showcase/cat-eye-person/frame-06.jpg" alt="第六张，黑暗中的手" width="150"></td>
+    <td><img src="assets/showcase/cat-eye-person/frame-07.jpg" alt="第七张，近距离跳脸" width="150"></td>
+    <td><strong>最终落点</strong><br>人一直在门里面。</td>
+  </tr>
+</table>
+
+<p align="center"><em>示例图只负责提供画面证据，发布时的文字由创作者在抖音页面填写。</em></p>
 
 ## 核心能力
 
-### 1．从事件种子开始，而不是从画面开始
+<table>
+  <tr>
+    <td width="25%"><strong>故事控制</strong><br>作者真相、信息权限、行动代价、伏笔回收和终局后果。</td>
+    <td width="25%"><strong>连续图组</strong><br>默认七张，最低六张；每张都必须带来新事实、判断变化或新问题。</td>
+    <td width="25%"><strong>空间锚点</strong><br>场景母版、父面、归一化坐标、相邻关系、朝向和禁止漂移项。</td>
+    <td width="25%"><strong>纯净交付</strong><br>9∶16、1080×1920、RGB、无平台界面、无水印、无图片内文字。</td>
+  </tr>
+</table>
 
-技能先给出三个彼此有明显差异的故事方向，每个方向都说明：
+## 设计原则
 
-- 一句话悬念。
-- 记录来源与核心视角。
-- 故事表面与作者真相。
-- 最后一张的恐怖、悬疑或反转落点。
-- 至少三条可回看的伏笔方向。
-- 图数与节奏差异。
+### 证据先于解释
 
-它不会在创作者还没选定真相之前，直接把一个模糊想法变成一组无法返工的图片。
+每张图都要能回答：画面给了什么证据，谁因此改变了判断，这个改变造成了什么后果。图片不依赖长段落解释故事。
 
-### 2．用信息权限控制悬疑公平性
+### 空间锚点先于“保持一致”
 
-控制稿区分记录者、核心人物、其他人物、观众和作者真相分别知道什么。这样可以避免两类常见问题：
+关键物件不能只写“在右边”或“靠下”。每个锚点都必须登记：
 
-- 角色突然使用了自己不可能获得的知识。
-- 结尾为了反转而凭空补上一段前文没有证据支持的设定。
+- 它属于门扇、门框、墙面、地面、柜体还是设备。
+- 它在场景母版中的归一化位置。
+- 它与至少两个相邻锚点的关系。
+- 它的朝向、尺度、上下顺序和允许变化。
+- 哪些变化直接判定失败，例如镜像、换父面、重复出现或局部漂移。
 
-开放结局可以保留来源、动机或后果，但不能用“什么都无法解释”掩盖作者没有想清楚。
+所以铰链会被写成“属于门框，不属于门扇；位于固定门框条；三枚保持同一纵向排列”，而不是一句模糊的“门保持一致”。
 
-### 3．用证据链替代“每张都发现一个新线索”
+### 恐怖逐步渗入
 
-每张图都回答一条状态链：
+默认节奏是：
 
-~~~text
-证据或压力 → 角色解释 → 行动选择 → 可见后果 → 下一张的新问题
-~~~
+`日常记录 → 微小异常 → 可验证证据 → 验证失败 → 解释反转 → 终局跳脸`
 
-故事因此会经历“普通记录 → 局部异常 → 主动验证 → 表面解释失效 → 反证 → 揭示 → 新后果”的变化，而不是七次重复发现。
-
-### 4．用空间锚点合同解决跨图漂移
-
-空间锚点不是“门在左边”这种模糊描述，而是一份可复用的空间真相源。每个关键对象登记：
-
-- 所属父面，例如门扇、门框、墙面、地面、柜体或设备。
-- 场景母版中的归一化包围框。
-- 与至少两个相邻对象的局部关系。
-- 朝向、尺度、允许变化和禁止变化。
-
-实际 prompt 必须重复携带锚点合同。镜头可以换角度，但门链不能从门扇跑到门框，电视不能突然换墙，脚印不能无理由反向，柜体不能镜像。
-
-### 5．底图和文本分层交付
-
-图片始终保持纯净无字，避免中文生成错误、平台界面污染和画面叙事被字幕绑架。同时输出独立的 captions.md：
-
-- 每张图一段第一人称观众版配文。
-- 总标题与总引子。
-- 置顶评论建议。
-- 话题建议。
-
-这让视觉证据和发布文本各司其职：图片负责让观众“看见”，配文负责让观众“跟着记录者继续读下去”。
-
-### 6．终局必须回收，而不是临时升级
-
-终局惊吓段要求最后一张重新解释至少两处前文细节，并留下可见后果。最后一张不能突然增加：
-
-- 新身份。
-- 新能力。
-- 新录像或新证据。
-- 前文没有出现的新关键道具。
-- 只为解释反转而临时出现的世界规则。
-
-恐怖感优先来自距离、盲区、反光、方向、遮挡和信息差，而不是无依据的血浆或怪物堆砌。
-
-### 7．终局图先保证可见冲击
-
-终局图除了完成故事回收，还要通过主体冲击力门：核心主体默认占画面约 60％～80％，缩略图状态下仍然一眼可识别，画面保持单一视觉焦点，背景和装饰不能抢走主体注意力。这个要求写进逐图卡、实际 prompt 和最终验收，不靠发布配文替画面解释恐怖点。
+最后一张不能凭空增加新身份、新能力或新世界规则。真正有力的跳脸，要让至少两处前文细节在最后重新变得可怕。
 
 ## 快速开始
 
 ### 安装到个人 Codex skills 目录
 
-Windows PowerShell：
+把仓库根目录复制到 Codex 的 skills 目录：
 
-~~~powershell
-git clone https://github.com/AppApp777/xuanyituwen.git "$env:USERPROFILE\.codex\skills\xuanyituwen"
-~~~
+```powershell
+Copy-Item -Recurse -Force . "$env:USERPROFILE\.codex\skills\xuanyituwen"
+```
 
-macOS 或 Linux：
+也可以把它放进某个项目的 `.agents/skills/` 目录，让它只对该项目生效。
 
-~~~bash
-git clone https://github.com/AppApp777/xuanyituwen.git ~/.codex/skills/xuanyituwen
-~~~
+### 在 Codex 中调用
 
-也可以把仓库目录放进某个项目的 .agents/skills/，让它只对该项目生效。
-
-### 运行依赖
-
-- Codex 宿主提供内置 image_gen，用于逐张生成底图。
-- Python 3。
-- Pillow，用于无字底图的尺寸、色彩模式和 PNG 归一化。
-
-安装 Pillow：
-
-~~~bash
-python -m pip install Pillow
-~~~
-
-这个仓库不是独立的图片生成应用。它提供的是 Codex 可执行的叙事编排、提示词组装、空间连续性和交付验收能力。
-
-### 在 Codex 中使用
-
-直接给 Codex 一个事件种子：
-
-~~~text
+```text
 使用 $xuanyituwen 做一套伪记录悬疑图文。
-事件种子：一个男生每天晚上都收到已经搬走的室友发来的语音，语音里有逐渐靠近的脚步声。
+事件种子：一个男生每天晚上收到已经搬走的室友发来的语音，语音里有逐渐靠近的脚步声。
 先给我三个故事方向，不要生图。
-~~~
+```
 
-完成故事确认后：
+skill 会在三个节点停下来等待创作者确认：
 
-~~~text
-确认控制稿。继续拆七张逐图卡并生成无字底图，最后给我每张图的第一人称发布配文。
-~~~
+1. 三个故事方向之后。
+2. 故事控制稿之后。
+3. 逐图卡和空间锚点合同之后。
 
-### 单独归一化底图
+确认后，才逐张调用 `image_gen`，再把无字底图归一化为最终 PNG。
 
-~~~bash
-python scripts/normalize_raster.py \
-  --input base/frame-01.png \
-  --output final/frame-01.png
-~~~
+## 输出结构
 
-脚本只做尺寸、色彩模式和 PNG 格式归一化，不添加文字层；它不负责检查输入图片是否已经含有文字，输出中的 `ocr_check` 会明确标记为 `not_run`。
+```text
+<story-slug>/
+├── story-control.md
+├── frame-plan.md
+├── continuity-ledger.md
+├── spatial-anchor-ledger.md
+├── prompts/
+├── base/
+├── final/
+└── README.md
+```
 
-## 输出合同
+其中：
 
-完成一套图组后，输出包应包含：
+- `base/` 是生图模型输出的原始无字底图。
+- `final/` 是经过尺寸、色彩模式和 PNG 格式归一化的无字成片。
+- `spatial-anchor-ledger.md` 是场景空间真相源。
+- `prompts/` 保存每张实际发送给 `image_gen` 的完整 prompt，便于追查漂移来自哪一段。
 
-~~~text
-<story-short-name>/
-├── story-control.md          # 作者真相、信息权限、时间线和结尾规则
-├── frame-plan.md             # 每张 FRAME-01 式编号的叙事与视觉卡片
-├── captions.md               # 带 FRAME 编号绑定的第一人称配文、标题、引子、置顶评论和话题
-├── continuity-ledger.md      # 角色、场景、物件和记录来源连续性
-├── spatial-anchor-ledger.md  # 场景母版与空间锚点合同
-├── prompts/                  # 每张实际使用的完整 prompt
-├── base/                     # 选定的原始无字底图
-├── final/                    # 归一化后的无字 PNG 成片
-└── README.md                 # 本组图的交付说明
-~~~
+## 仓库结构
 
-如果用户只要求方向、控制稿或分镜，不提前创建图片目录，也不调用生图工具。
+| 路径 | 用途 |
+| --- | --- |
+| [`SKILL.md`](SKILL.md) | Codex 实际执行的主流程与硬性规则 |
+| [`references/story-control-sheet.md`](references/story-control-sheet.md) | 作者控制稿模板 |
+| [`references/frame-card.md`](references/frame-card.md) | 单张图的叙事、视觉和无字底图接口 |
+| [`references/image-prompt-presets.md`](references/image-prompt-presets.md) | 生图 prompt 的模块化组装规则 |
+| [`references/spatial-anchor-ledger.md`](references/spatial-anchor-ledger.md) | 场景母版与空间锚点合同 |
+| [`references/quality-gate.md`](references/quality-gate.md) | 故事、连续性和成片验收门 |
+| [`scripts/normalize_raster.py`](scripts/normalize_raster.py) | 无字底图的尺寸与 PNG 归一化 |
+| [`evals/evals.json`](evals/evals.json) | 前向评测任务与评价维度 |
+| [`assets/branding/logo.png`](assets/branding/logo.png) | 项目正式 logo |
+| [`assets/branding/social-preview.png`](assets/branding/social-preview.png) | GitHub 仓库社交预览图 |
+| [`assets/showcase/`](assets/showcase/) | 脱敏后的公开案例预览 |
 
 ## 质量门
 
-### 故事逻辑
+交付前至少检查：
 
 - 作者真相或不可解释规则明确。
-- 每张图带来新事实、状态变化、判断变化或新问题。
-- 角色行动由已有证据和动机推动。
-- 记录者只使用自己能观察到的知识。
-- 结尾造成新的现实后果。
+- 至少三条线索在前文出现，结尾重新解释至少两处细节。
+- 人物、场景、关键物件、时间和记录来源连续。
+- 每个空间锚点的父面、局部位置、相邻关系、朝向和尺度稳定。
+- 没有抖音界面、头像、用户名、点赞、评论、标题、分享按钮、水印或生图模型残留文字。
+- `final/` 图片为 9∶16、1080×1920、RGB、纯净无字 PNG。
 
-### 伏笔与反转
+## 当前状态
 
-- 至少三条核心线索在前文出现。
-- 至少两处前文细节在结尾重新获得解释。
-- 误导方向有事实依据。
-- 结尾没有凭空增加决定性设定。
+核心生产链已经可以试跑真实故事：
 
-### 连续性与空间
+`故事控制 → 空间锚定 → 逐图编排 → 无字生图 → 连续性验收 → 无字成片`
 
-- 人物脸、发型、年龄感、衣着和识别特征连续。
-- 场景结构、光线方向和关键物件位置连续。
-- 空间锚点的父面、局部位置、相邻关系、朝向和尺度连续。
-- 没有换父面、镜像、上下顺序改变、相邻距离突变或无理由漂移。
+仍待补齐的开源工作：
 
-### 纯净画面与文本
+- 选择并添加正式许可证。
+- 增加更多不含个人信息的公开案例。
+- 增加图像连续性的自动化回归检查。
+- 在 GitHub Actions 中接入结构、脚本和样例检查。
 
-- 最终图片为 9∶16，默认 1080×1920，RGB PNG。
-- 图片没有字幕、对白、时间戳、平台界面、账号信息、水印或生图残留文字。
-- captions.md 为七张图提供第一人称配文，且与画面事实一致。
-- 逐图卡、prompt、图片文件和 captions.md 使用同一组 `FRAME-01` 式编号。
-- 终局图主体默认占画面约 60％～80％，缩略图中可识别，且只有一个主要视觉焦点。
+## 参与贡献
 
-## 文件说明
+最有价值的问题报告不是“图片好不好看”，而是指出：
 
-| 文件 | 作用 |
-|---|---|
-| SKILL.md | Codex 实际执行的主流程与硬性规则 |
-| references/story-control-sheet.md | 作者故事控制稿模板 |
-| references/frame-card.md | 单张图的叙事、视觉和文本接口 |
-| references/caption-sheet.md | `FRAME-01` 式图片、提示词和画面事实绑定模板 |
-| references/visual-presets.md | 真实记录、档案、设备记录等视觉预设 |
-| references/image-prompt-presets.md | 模块化生图 prompt 组装规则 |
-| references/spatial-anchor-ledger.md | 场景母版、父面、坐标与锚点漂移检查 |
-| references/quality-gate.md | 故事、连续性、伏笔、画面和结尾验收 |
-| references/provenance.md | 方法来源、许可证边界和独立设计说明 |
-| scripts/normalize_raster.py | 无字底图归一化脚本 |
-| evals/evals.json | 工作流前向测试任务与期待结果 |
-| agents/openai.yaml | Codex 界面显示名和默认入口 |
+- 哪一张图让故事因果断了。
+- 哪个伏笔在回看时没有得到公平回收。
+- 哪个物件换了父面、镜像了，或在画面中发生了不应有的漂移。
+- 哪一张图的构图让决定性证据看不清。
 
-## 评测与验证
-
-仓库内置五个工作流测试，覆盖方向先行、控制稿与伏笔、逐图视觉接口、第一人称文本交付和终局图主体冲击力验收。最小静态检查：
-
-~~~bash
-python -m json.tool evals/evals.json > /dev/null
-python -m py_compile scripts/normalize_raster.py
-~~~
-
-如果需要做完整的 with-skill 与 baseline 对比，可以使用 skill-creator 提供的评测流程，把结果放到仓库外的评测工作区，不把个人生成图和聊天记录提交进仓库。
-
-## 边界与局限
-
-1. image_gen 是 Codex 宿主能力，不随仓库一起提供。
-2. 空间锚点合同显著降低漂移，但不能替代逐图视觉验收；模型违反合同时必须重生成。
-3. 角色和场景连续性目前是“账本＋参考图＋人工验收”，不是自动视觉相似度系统。
-4. 平台安全区是保守的发布设计规则，不是任何客户端界面覆盖位置的永久保证。
-5. 仓库提供的是创作基础设施，不保证每个事件种子都能自动得到优秀的恐怖故事；作者真相和证据公平性仍需要创作者确认。
-
-## 方法来源与版权边界
-
-本项目独立编写了伪记录图文工作流、信息权限表、伏笔账本、空间锚点合同、无字成片归一化规则和质量门。它只吸收公开方法论，不复制受许可证约束的原文、模板、代码、字体或图片。具体说明见 references/provenance.md。
-
-提交示例时，请只使用自己创作或获得授权的文字、图片、字体和声音，不要把个人聊天记录、账号信息、API 密钥或未授权素材放进仓库。
-
-## 贡献方式
-
-最有价值的 issue 不是“这张图不好看”，而是可复现的问题：
-
-- 哪一张图让因果链断了。
-- 哪条伏笔在第一次阅读时完全不可见。
-- 哪个锚点发生了换父面、镜像或局部位置漂移。
-- 哪一段第一人称配文与画面事实不一致。
-- 哪个阶段把应当早期确认的创作决策推迟到了生图之后。
-
-提交问题时，请脱敏后附上事件种子、故事控制稿、逐图卡片和空间锚点账本；不要上传私人聊天记录或未获授权的素材。
+提交案例时，请先移除个人信息、未获授权的图片、聊天记录和 API 密钥。
 
 ## 许可证
 
-本项目采用 MIT License。见 LICENSE。
+本仓库只包含 `xuanyituwen` skill，采用 MIT License。许可证文件位于 [`LICENSE`](LICENSE)。
