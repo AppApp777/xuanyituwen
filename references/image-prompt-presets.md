@@ -57,13 +57,14 @@ Frame change: compared with the previous frame, <one visible state change>. Keep
 
 ## 空间锚点合同段
 
-这段必须紧跟在连续性锁定段之后，不能被省略，也不能每张图临时改写。具体数值来自 `references/spatial-anchor-ledger.md` 和输出包的场景母版。
+这段必须紧跟在连续性锁定段之后，不能被省略，也不能每张图临时改写。具体拓扑来自 `references/spatial-anchor-ledger.md`；图像平面坐标只在同镜位或可比较镜位时注入。
 
 ```text
-Spatial anchor contract: use the same scene master and do not mirror or redesign the layout. Anchor <ID> <object> is physically attached to <parent surface>, not to <alternative surface>. In the scene-master coordinate system it occupies x=<value>, y=<value>, w=<value>, h=<value>. Locally it stays <left/right/upper/lower relation> to <neighbor anchor A> and <neighbor anchor B>, with the same orientation and scale. Camera angle or crop may change the screen projection, but must not change the parent surface, side, height, neighboring relations, or object identity. Do not relocate it, flip it, duplicate it, or move it from <parent> to <alternative parent>.
+Spatial topology contract: use scene <scene_id> and do not mirror or redesign the layout. Anchor <ID> <object> is physically attached to <parent surface>, not to <alternative surface>. Preserve its local relation to <neighbor anchors>, orientation, scale, and identity. Camera angle or crop may change the screen projection, but must not change the parent surface, side, height, neighboring relations, or object identity. Do not relocate it, flip it, duplicate it, or move it to an alternative parent.
+Shot projection: use shot <shot_id>, coordinate space <scene-topology or shot-projection>, source asset <path>, shot class <class>, and crop allowance <allowed crop or occlusion>. Compare image-plane boxes only when the shot class is comparable.
 ```
 
-对于一组图中的多个固定物件，逐项列出合同，不要用一句“保持场景一致”代替。铰链、门链、猫眼、门把手这类附着在不同父面上的物件，要分别写清“属于门扇”还是“属于门框”。
+对于一组图中的多个固定物件，逐项列出合同，不要用一句“保持场景一致”代替。铰链、门链、猫眼、门把手这类附着在不同父面上的物件，要分别写清“属于门扇”还是“属于门框”。稀疏场景只有一个相邻锚点时，写明例外理由，不为了填表制造虚假邻居。
 
 示例：
 
@@ -216,6 +217,8 @@ Style/medium: ordinary handheld smartphone photography, imperfect framing, subtl
 Format: vertical 9:16 composition, intended for a 1080x1920 final raster image.
 Record carrier: an over-the-shoulder phone photo taken from inside the apartment, looking through the same chained door into the empty hallway.
 Continuity lock: the same 22-year-old slim Chinese male with pale tired face, straight black hair over the forehead, tiny mole under the left eye, charcoal-gray hoodie, old white T-shirt, black sweatpants, and black canvas shoes. Preserve the same dark brown door, brass peephole, brass chain, green hallway, and red fire-hose cabinet.
+Spatial topology contract: use scene SCENE-01. The brass chain belongs to the door leaf and frame hardware, the peephole stays in the upper half of the door leaf, and the red fire-hose cabinet stays on the hallway wall. Preserve their parent surfaces, local relations, vertical order, and identity; do not mirror the doorway or move the chain to the wall.
+Shot projection: use shot SHOT-02, a close interior view through the chained door. The screen projection may change with the door gap, but the scene topology does not.
 Required visual evidence: show the empty hallway beyond the chain and no person outside the threshold. The voice claims someone is at the door, but the visual evidence must contradict that claim.
 Composition/framing: the protagonist holds a black phone close to his ear while keeping the chain latched; keep the door gap and hallway depth visible.
 Lighting/mood: cold hallway light against warmer room light, quiet contradiction, realistic phone exposure.
@@ -233,6 +236,7 @@ Continuity lock: preserve the same protagonist, same charcoal-gray hoodie, same 
 Required visual evidence: the protagonist is unaware, while a figure in the established roommate's dark jacket stands inches behind him and is visible in the television reflection. The figure must connect to the earlier distant back-facing silhouette, not appear as a new monster.
 Reflection relation: the figure is physically present in the television reflection and occupies the space behind the protagonist, consistent with the room layout and camera position.
 Ending beat: reinterpret the earlier footprint, wall seam, recurring key fob, and dark jacket. Leave the protagonist facing the wrong direction with a visible new threat behind him.
+Ending impact: use one dominant threat occupying approximately 60-80% of the vertical frame. Keep the silhouette and proximity immediately readable at a fixed thumbnail size, use one focal point and strong subject-background contrast, and keep the television reflection and room detail subordinate to the threat. Do not crop the threat at the frame edge or add a new monster design.
 Jump-scare constraint: keep the room ordinary at first glance; use proximity, shadow, and delayed recognition instead of gore.
 The phone screen may show only a black screen or soft unreadable glow. No app layout, thumbnails, buttons, icons, status bar, notification cards, profile image, interface panels, or readable words.
 No platform interface, no avatar, no username, no likes, no comments, no title, no share button, no watermark, no logo, no readable text, no subtitles, no generated Chinese characters, no decorative horror illustration, no cinematic poster treatment.

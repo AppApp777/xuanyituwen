@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_name": "xuanyituwen",
+  "version": "0.3.0",
+  "scope": "deterministic contract checks",
+  "cases": 5,
+  "passed": 5,
+  "failed": 0,
+  "pass_rate": 1.0,
+  "tests": {"pytest": {"passed": 6, "failed": 0}, "artifact_package": "passed", "eval_config": "passed"},
+  "model_comparison": "not_run",
+  "visual_review": "not_run",
+  "notes": "本结果证明合同和夹具可运行，不宣称已经完成模型质量或基线盲评。"
+}

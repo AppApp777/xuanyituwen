@@ -1,4 +1,5 @@
 __pycache__/
+.pytest_cache/
 *.py[cod]
 .DS_Store
 .vscode/
@@ -12,3 +13,9 @@ outputs/
 *.jpg
 *.jpeg
 *.webp
+
+# Public examples are reviewed assets, not arbitrary generation output.
+!examples/**/*.png
+!examples/**/*.jpg
+!examples/**/*.jpeg
+!examples/**/*.webp

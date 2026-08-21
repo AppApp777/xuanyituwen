@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "package": "examples/cat-eye-person",
+  "evaluation_version": "v0.3.0",
+  "strict": true,
+  "passed": true,
+  "frames": [
+    "FRAME-01",
+    "FRAME-02",
+    "FRAME-03",
+    "FRAME-04",
+    "FRAME-05",
+    "FRAME-06",
+    "FRAME-07"
+  ],
+  "checks": {
+    "required_files": true,
+    "stable_frame_ids": true,
+    "prompt_image_caption_bindings": true,
+    "image_dimensions": "1080x1920",
+    "image_mode": "RGB",
+    "text_layer_added": false,
+    "ocr_check": "not_run",
+    "ending_subject_gate": true
+  },
+  "errors": [],
+  "warnings": [],
+  "note": "结构化交付检查通过；视觉审美仍需人工查看原图和缩略图。"
+}
