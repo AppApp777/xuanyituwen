@@ -179,6 +179,12 @@ Avoid polished film stills, centered poster composition, beauty lighting, symmet
 Ending beat: reveal the established threat by reinterpreting <at least two earlier details>. The final threat must be connected to <existing prop, shadow, footprint, voice, clothing, or location> and must leave a visible consequence. Make the scare discoverable in the image before the creator's publish-page caption explains it. Do not introduce a new identity, ability, object, or world rule in the final frame.
 ```
 
+终局图还要补充主体冲击力段：
+
+```text
+Ending impact: use one dominant subject occupying approximately 60-80% of the vertical frame. Keep the silhouette, face, hand, action, or threat immediately readable at thumbnail size. Use a single focal point, strong subject-background contrast, and a quiet background that supports rather than competes with the established threat. Do not let the subject be cropped by the frame edge or hidden by decorative effects.
+```
+
 如果需要突然惊吓：
 
 ```text

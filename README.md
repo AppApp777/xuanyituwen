@@ -125,6 +125,10 @@ flowchart LR
 
 恐怖感优先来自距离、盲区、反光、方向、遮挡和信息差，而不是无依据的血浆或怪物堆砌。
 
+### 7．终局图先保证可见冲击
+
+终局图除了完成故事回收，还要通过主体冲击力门：核心主体默认占画面约 60％～80％，缩略图状态下仍然一眼可识别，画面保持单一视觉焦点，背景和装饰不能抢走主体注意力。这个要求写进逐图卡、实际 prompt 和最终验收，不靠发布配文替画面解释恐怖点。
+
 ## 快速开始
 
 ### 安装到个人 Codex skills 目录
@@ -181,7 +185,7 @@ python scripts/normalize_raster.py \
   --output final/frame-01.png
 ~~~
 
-脚本只做尺寸、色彩模式和 PNG 格式归一化，不读取字体，不添加文字或其他图层。
+脚本只做尺寸、色彩模式和 PNG 格式归一化，不添加文字层；它不负责检查输入图片是否已经含有文字，输出中的 `ocr_check` 会明确标记为 `not_run`。
 
 ## 输出合同
 
@@ -190,8 +194,8 @@ python scripts/normalize_raster.py \
 ~~~text
 <story-short-name>/
 ├── story-control.md          # 作者真相、信息权限、时间线和结尾规则
-├── frame-plan.md             # 每张图的叙事与视觉卡片
-├── captions.md               # 第一人称配文、标题、引子、置顶评论和话题
+├── frame-plan.md             # 每张 FRAME-01 式编号的叙事与视觉卡片
+├── captions.md               # 带 FRAME 编号绑定的第一人称配文、标题、引子、置顶评论和话题
 ├── continuity-ledger.md      # 角色、场景、物件和记录来源连续性
 ├── spatial-anchor-ledger.md  # 场景母版与空间锚点合同
 ├── prompts/                  # 每张实际使用的完整 prompt
@@ -231,6 +235,8 @@ python scripts/normalize_raster.py \
 - 最终图片为 9∶16，默认 1080×1920，RGB PNG。
 - 图片没有字幕、对白、时间戳、平台界面、账号信息、水印或生图残留文字。
 - captions.md 为七张图提供第一人称配文，且与画面事实一致。
+- 逐图卡、prompt、图片文件和 captions.md 使用同一组 `FRAME-01` 式编号。
+- 终局图主体默认占画面约 60％～80％，缩略图中可识别，且只有一个主要视觉焦点。
 
 ## 文件说明
 
@@ -239,6 +245,7 @@ python scripts/normalize_raster.py \
 | SKILL.md | Codex 实际执行的主流程与硬性规则 |
 | references/story-control-sheet.md | 作者故事控制稿模板 |
 | references/frame-card.md | 单张图的叙事、视觉和文本接口 |
+| references/caption-sheet.md | `FRAME-01` 式图片、提示词和画面事实绑定模板 |
 | references/visual-presets.md | 真实记录、档案、设备记录等视觉预设 |
 | references/image-prompt-presets.md | 模块化生图 prompt 组装规则 |
 | references/spatial-anchor-ledger.md | 场景母版、父面、坐标与锚点漂移检查 |
@@ -250,7 +257,7 @@ python scripts/normalize_raster.py \
 
 ## 评测与验证
 
-仓库内置三个工作流测试，覆盖方向先行、控制稿与伏笔、逐图视觉接口。最小静态检查：
+仓库内置五个工作流测试，覆盖方向先行、控制稿与伏笔、逐图视觉接口、第一人称文本交付和终局图主体冲击力验收。最小静态检查：
 
 ~~~bash
 python -m json.tool evals/evals.json > /dev/null
